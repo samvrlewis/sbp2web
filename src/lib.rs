@@ -38,7 +38,7 @@ fn log_errors(messages: impl Iterator<Item = sbp::Result<SBP>>) -> impl Iterator
 
 
 #[wasm_bindgen]
-pub fn handle_sbp_file_data(sbp_file_data: Vec<u8>) -> u32 {
+pub fn handle_sbp_file_data(sbp_file_data: &[u8], out_tow: &mut [f64], out_sog: &mut [f64]) {
     console_error_panic_hook::set_once();
     let file_in_name = std::path::Path::new("/tmp/test");
     let outdir = std::path::Path::new("/tmp/");
@@ -61,7 +61,7 @@ pub fn handle_sbp_file_data(sbp_file_data: Vec<u8>) -> u32 {
         file_in: Some(file_in_name.to_owned()),
     };
     
-    let messages = sbp::iter_messages(sbp_file_data.as_slice());
+    let messages = sbp::iter_messages(sbp_file_data);
 
     let messages = log_errors(messages);
     let messages = Box::new(messages);
@@ -76,13 +76,27 @@ pub fn handle_sbp_file_data(sbp_file_data: Vec<u8>) -> u32 {
 
     let mut runner = Runner::new(messages, options);
 
+    let mut i = 0;
+
     for (ds, ds_msg) in &mut runner {
         if let Some(ref ds) = ds {
-            match ds.gps_week {
+            match ds.gps_tow_secs {
                 None => {},
                 Some(week_num) => {
-                    //log_many("got ds", &week_num.to_string());
+                    out_tow[i] = week_num;
                 }
+            }
+            match ds.sog_mps {
+                None => {},
+                Some(sog) => {
+                    out_sog[i] = sog;
+                }
+            }
+            i += 1;
+
+            if i >= out_sog.len() || i >= out_tow.len() {
+                log("too big");
+                break;
             }
             
         }
@@ -93,5 +107,5 @@ pub fn handle_sbp_file_data(sbp_file_data: Vec<u8>) -> u32 {
 
     log("Running sbp2csv");
     //run_sbp2csv(options);
-    return sbp_file_data.len().try_into().unwrap()
+    //return zero_vec
 }

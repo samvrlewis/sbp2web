@@ -15,3 +15,6 @@ sbp = { git = "https://github.com/swift-nav/libsbp.git", rev = "9219af3667c306f5
 
 [dependencies.getrandom]
 features = ["js"]
+
+[profile.release]
+lto = true

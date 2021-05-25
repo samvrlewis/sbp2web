@@ -9,3 +9,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2.74"
+sbp2report = { path = "../ICBINS/" }
+console_error_panic_hook = "0.1.6"
+sbp = { git = "https://github.com/swift-nav/libsbp.git", rev = "9219af3667c306f593ce774e053416eebbc86987" }
+
+[dependencies.getrandom]
+features = ["js"]

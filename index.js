@@ -65,22 +65,22 @@ const opts = {
 
     var arrayBuffer = this.result;
     console.log(arrayBuffer);
-    var poo = rust.then(m => m.handle_sbp_file_data(new Uint8Array(arrayBuffer)));
-    console.log(poo);
-    poo.then(p => {
-      console.log(p);
+    var sbpData = rust.then(m => m.handle_sbp_file_data(new Uint8Array(arrayBuffer)));
+    console.log(sbpData);
+    sbpData.then(sbpData => {
+      console.log(sbpData);
       var t1 = performance.now();
-      console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
+      console.log("Call to rust took " + (t1 - t0) + " milliseconds.");
       const data = [
-        p['tow'],
-        p['sat_useds']
+        sbpData['tow'],
+        sbpData['sat_useds']
       ];
       
       let u = new uPlot(opts, data, document.body);
 
       const data2 = [
-        p['tow'],
-        p['lats']
+        sbpData['tow'],
+        sbpData['lats']
       ];
       
       let y = new uPlot(opts, data2, document.body);
@@ -89,23 +89,19 @@ const opts = {
       mooSync.sub(u);
 			mooSync.sub(y);
 
-      let middle = Math.floor(p['tow'].length/2);
-      console.log(middle)
-
-      console.log({ lat: p['lats'][middle], lng: p['lons'][middle] })
-
+      let middle = Math.floor(sbpData['tow'].length/2);
       map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: p['lats'][middle], lng: p['lons'][middle] },
+        center: { lat: sbpData['lats'][middle], lng: sbpData['lons'][middle] },
         zoom: 12,
       });
       var bounds = new google.maps.LatLngBounds();
-      for (let i=0; i < p['lons'].length ; i+= 100) {
+      for (let i=0; i < sbpData['lons'].length ; i+= 100) {
         let m = new google.maps.Marker({
-          position: { lat: p['lats'][i], lng: p['lons'][i] },
+          position: { lat: sbpData['lats'][i], lng: sbpData['lons'][i] },
           icon: {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
             scale: 4,
-            rotation: p['cogs'][i]
+            rotation: sbpData['cogs'][i]
           },
           draggable: true,
           map: map,
@@ -114,12 +110,10 @@ const opts = {
       }
 
       map.setCenter(bounds.getCenter());
-
       map.fitBounds(bounds);
       
       //remove one zoom level to ensure no marker is on the edge.
       map.setZoom(map.getZoom()-1); 
-
 
     });
 
@@ -131,7 +125,7 @@ const opts = {
 let map;
 
 function initMap() {
-  console.log("in my butt")
+  
 }
 
 window.initMap = initMap;

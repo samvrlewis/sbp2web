@@ -1,11 +1,8 @@
 use wasm_bindgen::prelude::*;
-use std::convert::TryInto;
 use sbp2csv::runner::{MsgOptions, Runner};
-use sbp2csv::options::{Options,MsgOptionsFlags, OutputsFlags};
-use sbp::messages::{SBPMessage, SBP};
+use sbp::messages::{SBP};
 
 extern crate console_error_panic_hook;
-
 
 use serde::{Serialize, Deserialize};
 
@@ -50,38 +47,11 @@ fn log_errors(messages: impl Iterator<Item = sbp::Result<SBP>>) -> impl Iterator
         .filter_map(sbp::Result::ok)
 }
 
-
-
 #[wasm_bindgen]
 pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
-    console_error_panic_hook::set_once();
-    let file_in_name = std::path::Path::new("/tmp/test");
-    let outdir = std::path::Path::new("/tmp/");
-    let options = Options {
-        msg_options_flags: MsgOptionsFlags {
-            use_gnss_only: false,
-            use_obs_for_trk: false,
-            ignore_gnss_pos: false,
-            ignore_ins_pos: false,
-        },
-        outputs: OutputsFlags {
-            csv: true,
-            msg_csv: false,
-            kml: false,
-        },
-        sender_ids: None,
-        save_metrics: false,
-        kr: None,
-        out_dir: Some(outdir.to_owned()),
-        file_in: Some(file_in_name.to_owned()),
-    };
-    
+    console_error_panic_hook::set_once();    
     let messages = sbp::iter_messages(sbp_file_data);
-
     let messages = log_errors(messages);
-    let messages = Box::new(messages);
-    
-
     let options = MsgOptions {
         use_gnss_only: false,
         use_obs_for_trk: false,
@@ -99,7 +69,7 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
     let mut sat_useds = Vec::new();
     let mut cogs = Vec::new();
 
-    for (ds, ds_msg) in &mut runner {
+    for (ds, _) in &mut runner {
         if let Some(ref ds) = ds {
             match ds.gps_tow_secs {
                 None => {},
@@ -143,17 +113,10 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
                     cogs.push(cog);
                 }
             }
-            
-        }
-        if let Some(ref ds_msg) = ds_msg {
-           // log("got ds_msg");
         }
     }
 
-    log("Running sbp2csv");
-    //run_sbp2csv(options);
-    //return zero_vec
-    let example = SbpData {
+    let data = SbpData {
         tow: tows,
         sog: sogs,
         lats: lats,
@@ -163,5 +126,5 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
         cogs: cogs,
     };
 
-    JsValue::from_serde(&example).unwrap()
+    JsValue::from_serde(&data).unwrap()
 }

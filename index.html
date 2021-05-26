@@ -4,10 +4,20 @@
     <meta charset="UTF-8" />
     <title>sbp2report</title>
     <link rel="stylesheet" href="../dist/uPlot.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
   </head>
   <body>
     <input type="file" />
     <div id="result"></div>
     <div id="graph"></div>
+    <div id="map" style="height: 500px;"></div>
+    <script type="text/javascript" src="index.js"></script>
+    
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiXhHYeH57PTD6aU8PZaidG7R1g1BFkXo&callback=initMap&libraries=&v=weekly"
+      async></script>
+
   </body>
 </html>

@@ -5,6 +5,28 @@ const rust = import('./pkg');
 
 import uPlot from 'uplot'
 
+
+
+
+
+
+document.querySelector('input').addEventListener('change', function() {
+  var t0 = performance.now()
+  var reader = new FileReader();
+  let mooSync = uPlot.sync("moo");
+  const matchSyncKeys = (own, ext) => own == ext;
+const cursorOpts = {
+  lock: true,
+  focus: {
+    prox: 16,
+  },
+  sync: {
+    key: mooSync.key,
+    setSeries: true,
+    match: [matchSyncKeys, matchSyncKeys]
+  },
+};
+
 const opts = {
   width: 800,
   height: 400,
@@ -15,6 +37,7 @@ const opts = {
       y: false,
     }
   },
+  cursor: cursorOpts,
   scales: {
     x: {
       time: false,
@@ -38,13 +61,6 @@ const opts = {
     ]
   }
 };
-
-let tow = new Float64Array(10000);
-let sog = new Float64Array(10000);
-
-document.querySelector('input').addEventListener('change', function() {
-  var t0 = performance.now()
-  var reader = new FileReader();
   reader.onload = function() {
 
     var arrayBuffer = this.result;
@@ -57,13 +73,54 @@ document.querySelector('input').addEventListener('change', function() {
       console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
       const data = [
         p['tow'],
-        p['sog']
+        p['sat_useds']
       ];
       
       let u = new uPlot(opts, data, document.body);
-      console.log(tow);
-      console.log(sog);
-    
+
+      const data2 = [
+        p['tow'],
+        p['lats']
+      ];
+      
+      let y = new uPlot(opts, data2, document.body);
+      //u.addSeries([p['tow'], p['sogs']])
+
+      mooSync.sub(u);
+			mooSync.sub(y);
+
+      let middle = Math.floor(p['tow'].length/2);
+      console.log(middle)
+
+      console.log({ lat: p['lats'][middle], lng: p['lons'][middle] })
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: p['lats'][middle], lng: p['lons'][middle] },
+        zoom: 12,
+      });
+      var bounds = new google.maps.LatLngBounds();
+      for (let i=0; i < p['lons'].length ; i+= 100) {
+        let m = new google.maps.Marker({
+          position: { lat: p['lats'][i], lng: p['lons'][i] },
+          icon: {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            scale: 4,
+            rotation: p['cogs'][i]
+          },
+          draggable: true,
+          map: map,
+        });
+        bounds.extend(m.getPosition());
+      }
+
+      map.setCenter(bounds.getCenter());
+
+      map.fitBounds(bounds);
+      
+      //remove one zoom level to ensure no marker is on the edge.
+      map.setZoom(map.getZoom()-1); 
+
+
     });
 
 
@@ -71,6 +128,11 @@ document.querySelector('input').addEventListener('change', function() {
   reader.readAsArrayBuffer(this.files[0]);
 })
 
+let map;
 
+function initMap() {
+  console.log("in my butt")
+}
 
+window.initMap = initMap;
 

@@ -5,8 +5,42 @@
     <title>sbp2report</title>
     <link rel="stylesheet" href="../dist/uPlot.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+		<style>
+			.uplot .legend .series:first-child,
+			.uplot .legend .series th::after,
+			.uplot .legend .series td {
+				display: none;
+			}
 
+			.lib-toggles {
+				margin-top: 20px;
+				text-align: center;
+			}
+
+			button {
+				margin: 10px;
+			}
+
+			.hidden {
+				color: silver;
+			}
+
+			.bar-mark {
+				position: absolute;
+				background: rgba(0,0,0,0.3);
+			}
+
+			.uplot {
+				margin-bottom: 20px;
+				padding: 10px;
+				box-shadow: 0 0 10px rgba(0,0,0,0.3);
+			}
+      .u-over {
+			box-shadow: 0px 0px 0px 0.5px #ccc;
+		}
+		</style>
   </head>
+  
   <body>
     <input type="file" />
     <div id="result"></div>
@@ -20,6 +54,17 @@
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiXhHYeH57PTD6aU8PZaidG7R1g1BFkXo&callback=initMap&libraries=&v=weekly"
       async></script>
+
+
+      "SPS": {color: "red"},
+      "SBAS": {color: "purple"},
+      "DGPS": {color: "cyan"},
+      "RTK Float": {color: "blue"},
+      "RTK Fixed": {color: "green"},
+      "Dead Reckoning": {color: "black"},
+      "Manual": {color: "pink"},
+      "Simulator": {color: "pink"},
+      "Unknown": {color: "pink"}
 
   </body>
 </html>

@@ -15,6 +15,8 @@ pub struct SbpData {
     pub sat_trackeds: Vec<u8>, 
     pub sat_useds: Vec<u8>,
     pub cogs: Vec<f64>,
+    pub gnss_mode: Vec<u8>,
+    pub ins_mode: Vec<u8>,
 }
 
 
@@ -68,6 +70,8 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
     let mut sat_trackeds = Vec::new();
     let mut sat_useds = Vec::new();
     let mut cogs = Vec::new();
+    let mut gnss_mode = Vec::new();
+    let mut ins_mode = Vec::new();
 
     for (ds, _) in &mut runner {
         if let Some(ref ds) = ds {
@@ -113,6 +117,18 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
                     cogs.push(cog);
                 }
             }
+            match ds.gnss_mode {
+                None => {},
+                Some(gnss) => {
+                    gnss_mode.push(gnss as u8)
+                }
+            }
+            match ds.ins_mode {
+                None => {},
+                Some(ins) => {
+                    ins_mode.push(ins as u8)
+                }
+            }
         }
     }
 
@@ -124,6 +140,8 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
         sat_trackeds: sat_trackeds,
         sat_useds: sat_useds,
         cogs: cogs,
+        gnss_mode: gnss_mode,
+        ins_mode: ins_mode,
     };
 
     JsValue::from_serde(&data).unwrap()

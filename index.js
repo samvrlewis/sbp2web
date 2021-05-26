@@ -95,25 +95,44 @@ const opts = {
         zoom: 12,
       });
       var bounds = new google.maps.LatLngBounds();
-      for (let i=0; i < sbpData['lons'].length ; i+= 100) {
-        let m = new google.maps.Marker({
-          position: { lat: sbpData['lats'][i], lng: sbpData['lons'][i] },
-          icon: {
-            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            scale: 4,
-            rotation: sbpData['cogs'][i]
-          },
-          draggable: true,
-          map: map,
-        });
-        bounds.extend(m.getPosition());
+
+      let pathCoords = [];
+      const marker_freq = 1000;
+      
+      for (let i=0; i < sbpData['lons'].length ; i++) {
+        let pos = { lat: sbpData['lats'][i], lng: sbpData['lons'][i] };
+        pathCoords.push(pos);
+        bounds.extend(pos);
+
+        if (i % marker_freq == 0)
+        {
+          new google.maps.Marker({
+            position: pos,
+            icon: {
+              path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+              scale: 4,
+              rotation: sbpData['cogs'][i]
+            },
+            draggable: true,
+            map: map,
+          });
+        }
       }
+
+      const path = new google.maps.Polyline({
+        path: pathCoords,
+        geodesic: true,
+        strokeColor: "#FF0000",
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+      });
+      path.setMap(map);
 
       map.setCenter(bounds.getCenter());
       map.fitBounds(bounds);
       
       //remove one zoom level to ensure no marker is on the edge.
-      map.setZoom(map.getZoom()-1); 
+      map.setZoom(map.getZoom()); 
 
     });
 

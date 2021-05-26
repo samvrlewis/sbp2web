@@ -28,6 +28,9 @@ import uPlot from 'uplot'
 
 let map = new MapPlot(document.getElementById("map"));
 
+function makeStatsPlot() {}
+
+
 
 var dataSbp = null;
 
@@ -64,8 +67,6 @@ document.getElementById('file_input').addEventListener('change', function () {
     lock: false,
 
     sync: {
-      key: mooSync.key,
-      setSeries: true,
       match: [matchSyncKeys, matchSyncKeys]
     },
   };

@@ -17,9 +17,7 @@ document.querySelector('input').addEventListener('change', function() {
   const matchSyncKeys = (own, ext) => own == ext;
 const cursorOpts = {
   lock: true,
-  focus: {
-    prox: 16,
-  },
+
   sync: {
     key: mooSync.key,
     setSeries: true,
@@ -61,6 +59,9 @@ const opts = {
     ]
   }
 };
+
+
+
   reader.onload = function() {
 
     var arrayBuffer = this.result;
@@ -89,6 +90,48 @@ const opts = {
       mooSync.sub(u);
 			mooSync.sub(y);
 
+      let slider = document.getElementById("slider");
+      var output = document.getElementById("demo");
+      var m = null;
+      slider.oninput = function() {
+        // find the tow
+        let percentage = this.value;
+        let elements = sbpData['tow'].length;
+        let last_tow = sbpData['tow'][elements-1];
+        let first_tow = sbpData['tow'][0];
+
+        let index_value = Math.floor(sbpData['tow'].length * (percentage/10000.0));
+        index_value = Math.min(index_value, sbpData['tow'].length - 1);
+        index_value = Math.max(index_value, 0);
+        output.innerHTML = sbpData['tow'][index_value];
+
+
+
+        u.setCursor({
+          left: u.valToPos(u.data[0][index_value], 'x'),
+          top:  u.valToPos(u.data[1][index_value], 'y'),
+        });
+        u.cursor._lock = true;
+        let pos = { lat: sbpData['lats'][index_value], lng: sbpData['lons'][index_value] };
+        if (m != null) {
+          m.setMap(null);
+        }
+        
+        m = new google.maps.Marker({
+          position: pos,
+          icon: {
+            path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+            scale: 4,
+            rotation: sbpData['cogs'][index_value]
+          },
+          draggable: true,
+          map: map,
+        });
+
+        u.setSeries(null, {focus: true})
+      } 
+
+
       let middle = Math.floor(sbpData['tow'].length/2);
       map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: sbpData['lats'][middle], lng: sbpData['lons'][middle] },
@@ -106,16 +149,7 @@ const opts = {
 
         if (i % marker_freq == 0)
         {
-          new google.maps.Marker({
-            position: pos,
-            icon: {
-              path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-              scale: 4,
-              rotation: sbpData['cogs'][i]
-            },
-            draggable: true,
-            map: map,
-          });
+
         }
       }
 

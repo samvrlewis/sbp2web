@@ -49,15 +49,15 @@ document.querySelector('input').addEventListener('change', function() {
 
     var arrayBuffer = this.result;
     console.log(arrayBuffer);
-    var poo = rust.then(m => m.handle_sbp_file_data(new Uint8Array(arrayBuffer), tow, sog));
+    var poo = rust.then(m => m.handle_sbp_file_data(new Uint8Array(arrayBuffer)));
     console.log(poo);
     poo.then(p => {
       console.log(p);
       var t1 = performance.now();
       console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
       const data = [
-        tow.slice(0, 1000),
-        sog.slice(0,1000)
+        p['tow'],
+        p['sog']
       ];
       
       let u = new uPlot(opts, data, document.body);

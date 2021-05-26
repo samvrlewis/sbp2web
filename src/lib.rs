@@ -6,6 +6,16 @@ use sbp::messages::{SBPMessage, SBP};
 
 extern crate console_error_panic_hook;
 
+
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
+pub struct SbpData {
+    pub tow: Vec<f64>,
+    pub sog: Vec<f64>,
+}
+
+
 #[wasm_bindgen]
 extern "C" {
     fn alert(s: &str);
@@ -38,7 +48,7 @@ fn log_errors(messages: impl Iterator<Item = sbp::Result<SBP>>) -> impl Iterator
 
 
 #[wasm_bindgen]
-pub fn handle_sbp_file_data(sbp_file_data: &[u8], out_tow: &mut [f64], out_sog: &mut [f64]) {
+pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
     console_error_panic_hook::set_once();
     let file_in_name = std::path::Path::new("/tmp/test");
     let outdir = std::path::Path::new("/tmp/");
@@ -77,27 +87,24 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8], out_tow: &mut [f64], out_sog: 
     let mut runner = Runner::new(messages, options);
 
     let mut i = 0;
+    let mut tows = Vec::new();
+    let mut sogs = Vec::new();
 
     for (ds, ds_msg) in &mut runner {
         if let Some(ref ds) = ds {
             match ds.gps_tow_secs {
                 None => {},
                 Some(week_num) => {
-                    out_tow[i] = week_num;
+                    tows.push(week_num);
                 }
             }
             match ds.sog_mps {
                 None => {},
                 Some(sog) => {
-                    out_sog[i] = sog;
+                    sogs.push(sog);
                 }
             }
             i += 1;
-
-            if i >= out_sog.len() || i >= out_tow.len() {
-                log("too big");
-                break;
-            }
             
         }
         if let Some(ref ds_msg) = ds_msg {
@@ -108,4 +115,10 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8], out_tow: &mut [f64], out_sog: 
     log("Running sbp2csv");
     //run_sbp2csv(options);
     //return zero_vec
+    let example = SbpData {
+        tow: tows,
+        sog: sogs,
+    };
+
+    JsValue::from_serde(&example).unwrap()
 }

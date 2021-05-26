@@ -4,6 +4,7 @@
 const rust = import('./pkg');
 
 import {timelinePlugin, unsetSameFutureValues} from './uplotTimeline.js'
+import {MapPlot} from './mapPlot.js'
 
 const GNSS_MODES = {
   0 : null,
@@ -23,20 +24,14 @@ const INSS_MODES = {
   1: "On"
 }
 
-
-
 import uPlot from 'uplot'
 
-
-
-
-
+let map = new MapPlot(document.getElementById("map"));
 
 
 var dataSbp = null;
 
 let last_idx = null;
-var m = null;
 
 function set_cursor(u) {
   let index_value = u.cursor.idx;
@@ -46,21 +41,8 @@ function set_cursor(u) {
   }
   //console.log(dataSbp);
   last_idx = index_value;
-  let pos = { lat: dataSbp['lats'][index_value], lng: dataSbp['lons'][index_value] };
-  if (m != null) {
-    m.setMap(null);
-  }
-  
-  m = new google.maps.Marker({
-    position: pos,
-    icon: {
-      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-      scale: 4,
-      rotation: dataSbp['cogs'][index_value]
-    },
-    draggable: true,
-    map: map,
-  });
+
+  map.setMarker(dataSbp['lats'][index_value], dataSbp['lons'][index_value], dataSbp['cogs'][index_value]);
 }
 
 function set_scale(u) {
@@ -69,13 +51,7 @@ function set_scale(u) {
   let x_min = u.scales.x.min;
   let x_idx = [u.valToIdx(x_min), u.valToIdx(x_max)];
 
-  var bounds = new google.maps.LatLngBounds();
-  for (let i=x_idx[0]; i < x_idx[1] ; i++) {
-    let pos = { lat: dataSbp['lats'][i], lng: dataSbp['lons'][i] };
-    bounds.extend(pos);
-  }
-  map.setCenter(bounds.getCenter());
-  map.fitBounds(bounds);
+  map.setZoom(x_idx[0], x_idx[1]);
 }
 
 
@@ -219,41 +195,7 @@ function makeTimelineChart(o, d) {
 
 
 
-      let middle = Math.floor(sbpData['tow'].length/2);
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: sbpData['lats'][middle], lng: sbpData['lons'][middle] },
-        zoom: 12,
-      });
-      var bounds = new google.maps.LatLngBounds();
-
-      let pathCoords = [];
-      const marker_freq = 1000;
-      
-      for (let i=0; i < sbpData['lons'].length ; i++) {
-        let pos = { lat: sbpData['lats'][i], lng: sbpData['lons'][i] };
-        pathCoords.push(pos);
-        bounds.extend(pos);
-
-        if (i % marker_freq == 0)
-        {
-
-        }
-      }
-
-      const path = new google.maps.Polyline({
-        path: pathCoords,
-        geodesic: true,
-        strokeColor: "#FF0000",
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-      });
-      path.setMap(map);
-
-      map.setCenter(bounds.getCenter());
-      map.fitBounds(bounds);
-      
-      //remove one zoom level to ensure no marker is on the edge.
-      map.setZoom(map.getZoom());
+      map.init(sbpData["lats"], sbpData["lons"]);
 
 
       let data4 = [
@@ -305,7 +247,6 @@ function makeTimelineChart(o, d) {
   reader.readAsArrayBuffer(this.files[0]);
 })
 
-let map;
 
 function initMap() {
   

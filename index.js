@@ -3,11 +3,11 @@
 // will work here one day as well!
 const rust = import('./pkg');
 
-import {timelinePlugin, unsetSameFutureValues} from './uplotTimeline.js'
-import {MapPlot} from './mapPlot.js'
+import { timelinePlugin, unsetSameFutureValues } from './uplotTimeline.js'
+import { MapPlot } from './mapPlot.js'
 
 const GNSS_MODES = {
-  0 : null,
+  0: null,
   1: "SPS",
   2: "DGPS",
   3: "RTK Float",
@@ -55,122 +55,122 @@ function set_scale(u) {
 }
 
 
-document.getElementById('file_input').addEventListener('change', function() {
+document.getElementById('file_input').addEventListener('change', function () {
   var t0 = performance.now()
   var reader = new FileReader();
   let mooSync = uPlot.sync("moo");
   const matchSyncKeys = (own, ext) => own == ext;
-const cursorOpts = {
-  lock: false,
+  const cursorOpts = {
+    lock: false,
 
-  sync: {
-    key: mooSync.key,
-    setSeries: true,
-    match: [matchSyncKeys, matchSyncKeys]
-  },
-};
-
-let size = document.getElementById("stats_graph").getBoundingClientRect();
-
-
-const opts = {
-  width: size['width']-50,
-  height: 400,
-  cursor: {
-    drag: {
-      setScale: false,
-      x: true,
-      y: false,
-    }
-  },
-  cursor: cursorOpts,
-  scales: {
-    x: {
-      time: false,
-    }
-  },
-  series: [
-    {},
-    {
-      label: "sats used",
-      stroke: "red"
+    sync: {
+      key: mooSync.key,
+      setSeries: true,
+      match: [matchSyncKeys, matchSyncKeys]
     },
-    {
-      label: "sog (m/s)",
-      stroke: "blue"
-    }
-  ],
-  hooks: {
-    setCursor: [
-      u => {
+  };
 
-        set_cursor(u);
-      }
-    ],
-    setScale: [
-      u => {
-        set_scale(u);
-      }
-    ]
-  }
-};
+  let size = document.getElementById("stats_graph").getBoundingClientRect();
 
-let size2 = document.getElementById("mode_graph").getBoundingClientRect();
-function makeTimelineChart(o, d) {
-  const optsd = {
-    width:  size2['width']-50,
-    height: 100,
-    title: "Timeline / Discrete",
-    drawOrder: ["series", "axes"],
-    scales: {
-      x: {
-        time:false,
-      }
-    },
-    axes: [
-      {},
-      {},
-    ],
-    legend: {
-      live: false,
-      markers: {
-        width: 0,
+
+  const opts = {
+    width: size['width'] - 50,
+    height: 400,
+    cursor: {
+      drag: {
+        setScale: false,
+        x: true,
+        y: false,
       }
     },
     cursor: cursorOpts,
-    padding: [null, 0, null, 0],
+    scales: {
+      x: {
+        time: false,
+      }
+    },
     series: [
+      {},
       {
-        label: "Lib Name"
+        label: "sats used",
+        stroke: "red"
       },
       {
-        label: "GNSS Mode",
-        fill:  "white",
-        stroke: "white",
-        width: 4,
-      },
-      {
-        label: "INS Mode",
-        fill:  "white",
-        stroke: "white",
-        width: 4,
-      },
+        label: "sog (m/s)",
+        stroke: "blue"
+      }
     ],
-    plugins: [
-      timelinePlugin({
-        count: d.length - 1,
-        ...o,
-      }),
-    ],
+    hooks: {
+      setCursor: [
+        u => {
+
+          set_cursor(u);
+        }
+      ],
+      setScale: [
+        u => {
+          set_scale(u);
+        }
+      ]
+    }
   };
 
-  let u = new uPlot(optsd, d, document.getElementById("mode_graph"));
-  mooSync.sub(u);
-}
+  let size2 = document.getElementById("mode_graph").getBoundingClientRect();
+  function makeTimelineChart(o, d) {
+    const optsd = {
+      width: size2['width'] - 50,
+      height: 100,
+      title: "Timeline / Discrete",
+      drawOrder: ["series", "axes"],
+      scales: {
+        x: {
+          time: false,
+        }
+      },
+      axes: [
+        {},
+        {},
+      ],
+      legend: {
+        live: false,
+        markers: {
+          width: 0,
+        }
+      },
+      cursor: cursorOpts,
+      padding: [null, 0, null, 0],
+      series: [
+        {
+          label: "Lib Name"
+        },
+        {
+          label: "GNSS Mode",
+          fill: "white",
+          stroke: "white",
+          width: 4,
+        },
+        {
+          label: "INS Mode",
+          fill: "white",
+          stroke: "white",
+          width: 4,
+        },
+      ],
+      plugins: [
+        timelinePlugin({
+          count: d.length - 1,
+          ...o,
+        }),
+      ],
+    };
+
+    let u = new uPlot(optsd, d, document.getElementById("mode_graph"));
+    mooSync.sub(u);
+  }
 
 
 
-  reader.onload = function() {
+  reader.onload = function () {
 
     var arrayBuffer = this.result;
     console.log(arrayBuffer);
@@ -200,29 +200,29 @@ function makeTimelineChart(o, d) {
 
       let data4 = [
         sbpData['tow'],
-        sbpData['gnss_mode'].map(function(m) { return GNSS_MODES[m] }),
-        sbpData['ins_mode'].map(function(i) { return INSS_MODES[i] })
+        sbpData['gnss_mode'].map(function (m) { return GNSS_MODES[m] }),
+        sbpData['ins_mode'].map(function (i) { return INSS_MODES[i] })
       ]
       unsetSameFutureValues(data4);
       console.log(data4)
-          
-			let statesDisplay3 = [
-				{},
-				{
-          "SPS": {color: "red"},
-          "SBAS": {color: "purple"},
-          "DGPS": {color: "cyan"},
-          "RTK Float": {color: "blue"},
-          "RTK Fixed": {color: "green"},
-          "Dead Reckoning": {color: "black"},
-          "Manual": {color: "pink"},
-          "Simulator": {color: "pink"},
-          "Unknown": {color: "pink"}
-				},
-				{
-					"On":  {color: "black"},
-				},
-			];
+
+      let statesDisplay3 = [
+        {},
+        {
+          "SPS": { color: "red" },
+          "SBAS": { color: "purple" },
+          "DGPS": { color: "cyan" },
+          "RTK Float": { color: "blue" },
+          "RTK Fixed": { color: "green" },
+          "Dead Reckoning": { color: "black" },
+          "Manual": { color: "pink" },
+          "Simulator": { color: "pink" },
+          "Unknown": { color: "pink" }
+        },
+        {
+          "On": { color: "black" },
+        },
+      ];
 
       let config = {
         "title": "Merged same consecutive states",
@@ -232,8 +232,8 @@ function makeTimelineChart(o, d) {
           0.9,
           100
         ],
-        fill:   (seriesIdx, dataIdx, value) =>  statesDisplay3[seriesIdx][value].color,
-				stroke: (seriesIdx, dataIdx, value) =>  statesDisplay3[seriesIdx][value].color,
+        fill: (seriesIdx, dataIdx, value) => statesDisplay3[seriesIdx][value].color,
+        stroke: (seriesIdx, dataIdx, value) => statesDisplay3[seriesIdx][value].color,
       };
 
       makeTimelineChart(config, data4);
@@ -249,7 +249,7 @@ function makeTimelineChart(o, d) {
 
 
 function initMap() {
-  
+
 }
 
 window.initMap = initMap;

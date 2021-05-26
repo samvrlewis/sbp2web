@@ -87,7 +87,12 @@ const opts = {
   series: [
     {},
     {
+      label: "sats used",
       stroke: "red"
+    },
+    {
+      label: "sog (m/s)",
+      stroke: "blue"
     }
   ],
   hooks: {
@@ -119,13 +124,15 @@ const opts = {
       console.log("Call to rust took " + (t1 - t0) + " milliseconds.");
       const data = [
         sbpData['tow'],
-        sbpData['sat_useds']
+        sbpData['sat_useds'],
+        sbpData['sog']
       ];
       dataSbp = sbpData;
       let u = new uPlot(opts, data, document.body);
 
       const data2 = [
         sbpData['tow'],
+        sbpData['sat_useds'],
         sbpData['sog']
       ];
       

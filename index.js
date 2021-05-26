@@ -6,8 +6,50 @@ const rust = import('./pkg');
 import uPlot from 'uplot'
 
 
+var dataSbp = null;
 
+let last_idx = null;
+var m = null;
 
+function set_cursor(u) {
+  let index_value = u.cursor.idx;
+
+  if (index_value == last_idx || index_value == null) {
+    return;
+  }
+  //console.log(dataSbp);
+  last_idx = index_value;
+  let pos = { lat: dataSbp['lats'][index_value], lng: dataSbp['lons'][index_value] };
+  if (m != null) {
+    m.setMap(null);
+  }
+  
+  m = new google.maps.Marker({
+    position: pos,
+    icon: {
+      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+      scale: 4,
+      rotation: dataSbp['cogs'][index_value]
+    },
+    draggable: true,
+    map: map,
+  });
+}
+
+function set_scale(u) {
+  console.log(u);
+  let x_max = u.scales.x.max;
+  let x_min = u.scales.x.min;
+  let x_idx = [u.valToIdx(x_min), u.valToIdx(x_max)];
+
+  var bounds = new google.maps.LatLngBounds();
+  for (let i=x_idx[0]; i < x_idx[1] ; i++) {
+    let pos = { lat: dataSbp['lats'][i], lng: dataSbp['lons'][i] };
+    bounds.extend(pos);
+  }
+  map.setCenter(bounds.getCenter());
+  map.fitBounds(bounds);
+}
 
 
 document.querySelector('input').addEventListener('change', function() {
@@ -16,7 +58,7 @@ document.querySelector('input').addEventListener('change', function() {
   let mooSync = uPlot.sync("moo");
   const matchSyncKeys = (own, ext) => own == ext;
 const cursorOpts = {
-  lock: true,
+  lock: false,
 
   sync: {
     key: mooSync.key,
@@ -24,6 +66,7 @@ const cursorOpts = {
     match: [matchSyncKeys, matchSyncKeys]
   },
 };
+
 
 const opts = {
   width: 800,
@@ -48,13 +91,15 @@ const opts = {
     }
   ],
   hooks: {
-    init: [
+    setCursor: [
       u => {
-        u.root.querySelector(".u-over").ondblclick = e => {
-          console.log("Fetching data for full range");
 
-          u.setData(data);
-        }
+        set_cursor(u);
+      }
+    ],
+    setScale: [
+      u => {
+        set_scale(u);
       }
     ]
   }
@@ -76,12 +121,12 @@ const opts = {
         sbpData['tow'],
         sbpData['sat_useds']
       ];
-      
+      dataSbp = sbpData;
       let u = new uPlot(opts, data, document.body);
 
       const data2 = [
         sbpData['tow'],
-        sbpData['lats']
+        sbpData['sog']
       ];
       
       let y = new uPlot(opts, data2, document.body);
@@ -92,7 +137,7 @@ const opts = {
 
       let slider = document.getElementById("slider");
       var output = document.getElementById("demo");
-      var m = null;
+      
       slider.oninput = function() {
         // find the tow
         let percentage = this.value;
@@ -112,21 +157,7 @@ const opts = {
           top:  u.valToPos(u.data[1][index_value], 'y'),
         });
         u.cursor._lock = true;
-        let pos = { lat: sbpData['lats'][index_value], lng: sbpData['lons'][index_value] };
-        if (m != null) {
-          m.setMap(null);
-        }
-        
-        m = new google.maps.Marker({
-          position: pos,
-          icon: {
-            path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-            scale: 4,
-            rotation: sbpData['cogs'][index_value]
-          },
-          draggable: true,
-          map: map,
-        });
+
 
         u.setSeries(null, {focus: true})
       } 
@@ -166,9 +197,11 @@ const opts = {
       map.fitBounds(bounds);
       
       //remove one zoom level to ensure no marker is on the edge.
-      map.setZoom(map.getZoom()); 
+      map.setZoom(map.getZoom());
 
-    });
+    }
+
+    );
 
 
   }

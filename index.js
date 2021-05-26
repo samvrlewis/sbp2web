@@ -252,7 +252,7 @@ function set_scale(u) {
 }
 
 
-document.querySelector('input').addEventListener('change', function() {
+document.getElementById('file_input').addEventListener('change', function() {
   var t0 = performance.now()
   var reader = new FileReader();
   let mooSync = uPlot.sync("moo");
@@ -267,9 +267,11 @@ const cursorOpts = {
   },
 };
 
+let size = document.getElementById("stats_graph").getBoundingClientRect();
+
 
 const opts = {
-  width: 800,
+  width: size['width']-50,
   height: 400,
   cursor: {
     drag: {
@@ -310,10 +312,11 @@ const opts = {
   }
 };
 
+let size2 = document.getElementById("mode_graph").getBoundingClientRect();
 function makeTimelineChart(o, d) {
   const optsd = {
-    width:  1920,
-    height: 300,
+    width:  size2['width']-50,
+    height: 100,
     title: "Timeline / Discrete",
     drawOrder: ["series", "axes"],
     scales: {
@@ -339,13 +342,13 @@ function makeTimelineChart(o, d) {
       },
       {
         label: "GNSS Mode",
-        fill:  "#33BB55",
+        fill:  "white",
         stroke: "white",
         width: 4,
       },
       {
         label: "INS Mode",
-        fill:  "#B56FAB",
+        fill:  "white",
         stroke: "white",
         width: 4,
       },
@@ -358,7 +361,7 @@ function makeTimelineChart(o, d) {
     ],
   };
 
-  let u = new uPlot(optsd, d, document.body);
+  let u = new uPlot(optsd, d, document.getElementById("mode_graph"));
   mooSync.sub(u);
 }
 
@@ -380,39 +383,13 @@ function makeTimelineChart(o, d) {
         sbpData['sog']
       ];
       dataSbp = sbpData;
-      let u = new uPlot(opts, data, document.body);
+      let u = new uPlot(opts, data, document.getElementById("stats_graph"));
 
 
       //u.addSeries([p['tow'], p['sogs']])
 
       mooSync.sub(u);
 
-      let slider = document.getElementById("slider");
-      var output = document.getElementById("demo");
-      
-      slider.oninput = function() {
-        // find the tow
-        let percentage = this.value;
-        let elements = sbpData['tow'].length;
-        let last_tow = sbpData['tow'][elements-1];
-        let first_tow = sbpData['tow'][0];
-
-        let index_value = Math.floor(sbpData['tow'].length * (percentage/10000.0));
-        index_value = Math.min(index_value, sbpData['tow'].length - 1);
-        index_value = Math.max(index_value, 0);
-        output.innerHTML = sbpData['tow'][index_value];
-
-
-
-        u.setCursor({
-          left: u.valToPos(u.data[0][index_value], 'x'),
-          top:  u.valToPos(u.data[1][index_value], 'y'),
-        });
-        u.cursor._lock = true;
-
-
-        u.setSeries(null, {focus: true})
-      } 
 
 
       let middle = Math.floor(sbpData['tow'].length/2);

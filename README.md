@@ -1,15 +1,51 @@
-# Hello, World!
+# SBP Online Viewer
 
-[View documentation for this example online][dox] or [View compiled example
-online][compiled]
+The SBP Online Viewer allows for visualising data contained in a SBP file in a
+browser, entirely by client side processing. It is an alternative to tools like
+sbp2report and ICBINS (sbp2csv) and may be useful in situations where it is
+difficult to install external tools.
 
-[compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/hello_world/
-[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/hello-world.html
+It also synchronizes zooming across data plots and maps, which may be useful for
+debugging.
 
-You can build the example locally with:
+It is hosted at:
+## Screenshot
+![screenshot](doc/screenshot.png)
+
+## Get Started
+For local development, install all dependencies with:
 
 ```
-$ npm run serve
+npm install
+cargo install wasm-pack
 ```
 
-and then visiting http://localhost:8080 in a browser should run the example!
+Then serve the site locally, this will rebuild when any of the
+rust/html/javascript changes.
+
+```
+npm run serve
+```
+
+visit http://localhost:8080 in a browser to see it running.
+
+## Architecture
+The deserialisation of the binary sbp files is performed in wasm-compiled Rust
+code that leverages the [ICBINS](https://github.com/swift-nav/ICBINS) project.
+This returns arrays of data to Javascript code, which then plots the data using
+[uPlot](https://github.com/leeoniya/uPlot) and Google Maps.
+
+## Performance
+
+On my i7 laptop, processing a 175 MB .sbp file takes:
+
+
+| Tool          | Time (sec)    |
+| ------------- |:-------------:|
+| `sbp2report`     | 10s |
+| `ICBINS` (release mode)      | 12s      |
+| `sbp online viewer` (release mode) | 21s      |
+
+Note that this comparison is not strictly fair as the online viewer is not
+writing csv files to disk in this case, rather it is just presenting plots in
+the browser. Still, it shows the relative speediness of wasm!

@@ -220,6 +220,7 @@ function onSbpFileData(fileData) {
     sbpData.then(sbpData => {
       document.getElementById("filepicker").classList.add('hidden');
       document.getElementById("graph_content").classList.remove("hidden");
+      document.getElementById("file_details").classList.remove("hidden");
       console.log(sbpData);
       var t1 = performance.now();
       console.log("Call to rust took " + (t1 - t0) + " milliseconds.");
@@ -242,7 +243,7 @@ function onSbpFileData(fileData) {
       makeTimelineChart(timeLineData, document.getElementById("mode_graph"));
     });
   
-  }, 10);
+  }, 20);
 
 }
 

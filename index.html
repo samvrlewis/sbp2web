@@ -46,13 +46,29 @@
 
       <div class="w-1/2 pl-2 md:pl-5">
         <a class="text-gray-900 text-base xl:text-xl no-underline hover:no-underline font-bold" href=".">
-          <i class="fas fa-sun text-pink-600 pr-3"></i> SwiftNav SBP Viewer
+          SwiftNav SBP Viewer
         </a>
       </div>
 
     </div>
   </nav>
+  <nav id="file_details" class="hidden bg-gray-600 w-full z-10 top-0 shadow pb-3">
+    <div class="w-full mx-auto flex flex-wrap items-center mt-0 pt-3 pb-5 md:pb-0">
 
+      <div class="w-1/2 pl-2 md:pl-5">
+        <div class="text-white text-base xl:text-m" href=".">
+          <span id="filename"></span>
+        </div>
+      </div>
+
+      <div class="w-1/2 pl-2 md:pl-5 float-right pr-2">
+      <button onclick="alert('not implemented yet :(')" class="float-right bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded m-0">
+        Download CSV
+      </button>
+    </div>
+
+    </div>
+  </nav>
   <!--Container-->
   <div class="xl w-full mx-auto pt-0">
 
@@ -89,14 +105,14 @@
 
 
 
-        <div class="w-11/12 md:w-11/2 xl:w-11/12 pt-2 pr-1 pl-3"  style="height: 250px">
+        <div class="w-11/12 md:w-10/2 xl:w-11/12 pt-2 pr-1 pl-3"  style="height: 250px">
           <!--Graph Card-->
           <div class="p-2 h-full border rounded shadow bg-white">
             <div class="h-full" id="mode_graph"></div>
           </div>
         </div>
         <!--/Graph Card-->
-        <div class="w-1/12 md:w-1/12 xl:w-1/12 pl-3 pr-5 pt-2" style="height: 250px">
+        <div class="w-1/12 md:w-2/12 xl:w-1/12 pl-3 pr-5 pt-2" style="height: 250px">
           <!--Graph Card-->
           <div class="bg-white border rounded shadow h-full" >
             <div class="p-3 h-full">

@@ -32,7 +32,7 @@ document.getElementById('hidden-input').addEventListener('change', function () {
         var arrayBuffer = this.result;
         onSbpFileData(arrayBuffer);
     }
-
+    document.getElementById('filename').innerHTML = this.files[0].name;
     reader.readAsArrayBuffer(this.files[0]);
 });
 
@@ -55,6 +55,7 @@ function dropHandler(ev) {
         onSbpFileData(arrayBuffer);
     }
 
+    document.getElementById('filename').innerHTML = ev.dataTransfer.files[0].name;
     reader.readAsArrayBuffer(ev.dataTransfer.files[0]);
     overlay.classList.remove("draggedover");
     counter = 0;

@@ -146,18 +146,22 @@ function makeTimelineChart(data, domElement) {
     },
     cursor: cursorOpts,
     padding: [null, 0, null, 0],
+    class: "bg-white",
+    legend: {
+      show: false,
+    },
     series: [
       {
         label: "Lib Name"
       },
       {
-        label: "GNSS Mode",
+        label: "GNSS",
         fill: "white",
         stroke: "white",
-        width: 4,
+        width: 10,
       },
       {
-        label: "INS Mode",
+        label: "INS",
         fill: "white",
         stroke: "white",
         width: 4,

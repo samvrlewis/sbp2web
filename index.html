@@ -81,23 +81,23 @@
 
       <div id="graph_content" class="flex flex-wrap hidden">
 
-        <div class="w-1/2 md:w-1/2 xl:w-1/2 p-3" style="height: 500px;" >
+        <div class="w-1/2 md:w-1/2 xl:w-1/2 p-3" style="height: 500px;">
           <!--Graph Card-->
           <div class="bg-white border rounded shadow h-full">
 
             <div class="p-5 h-full">
-              <div id="map" class="h-full" ></div>
+              <div id="map" class="h-full"></div>
             </div>
           </div>
           <!--/Graph Card-->
         </div>
 
-        <div class="w-1/2 md:w-1/2 xl:w-1/2 p-3" style="height: 500px;" >
+        <div class="w-1/2 md:w-1/2 xl:w-1/2 p-3" style="height: 500px;">
           <!--Graph Card-->
           <div class="h-full">
 
             <div class="p-0 h-full">
-              <div id="stats_graph" class="h-full" ></div>
+              <div id="stats_graph" class="h-full"></div>
             </div>
           </div>
           <!--/Graph Card-->
@@ -106,17 +106,46 @@
 
 
 
-        <div class="w-full md:w-full xl:w-full p-3">
+        <div class="w-11/12 md:w-11/2 xl:w-11/12 pt-2 pr-1 pl-1">
           <!--Graph Card-->
-          <div class="p-5">
+          <div class="p-0">
             <div id="mode_graph"></div>
           </div>
         </div>
         <!--/Graph Card-->
+        <div class="w-1/12 md:w-1/12 xl:w-1/12 pl-0 pr-5 pt-2">
+          <!--Graph Card-->
+          <div class="bg-white border rounded shadow" style="height: 247px">
+            <div class="p-3">
+              <ul class="legend">
+                <li><span style="background-color:red"></span>SPS</li>
+                <li><span style="background-color: purple;"></span>SBAS</li>
+                <li><span style="background-color: cyan;"></span>DGPS</li>
+                <li><span style="background-color: blue;"></span>RTK Float</li>
+                <li><span style="background-color: green;"></span>RTK Fixed</li>
+                <li><span style="background-color: black;"></span>Dead Reckoning</li>
+              </ul>
+  
+            </div>
+          </div>
+        </div>
       </div>
 
 
 
+
+      <style>
+        /* basic positioning */
+
+        .legend span {
+          border: 1px solid #ccc;
+          float: left;
+          width: 12px;
+          height: 12px;
+          margin: 6px;
+        }
+        
+      </style>
 
 
 
@@ -130,12 +159,13 @@
 
     </div>
 
-  <script type="text/javascript" src="index.js"></script>
-  <script type="text/javascript" src="fileUpload.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    <script type="text/javascript" src="fileUpload.js"></script>
 
-  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiXhHYeH57PTD6aU8PZaidG7R1g1BFkXo&libraries=&v=weekly"
-    async></script>
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiXhHYeH57PTD6aU8PZaidG7R1g1BFkXo&libraries=&v=weekly"
+      async></script>
 
 </body>
 

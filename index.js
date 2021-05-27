@@ -43,9 +43,9 @@ function makeStatsPlot(data, domElement) {
   let size = document.getElementById("stats_graph").getBoundingClientRect();
   console.log(size);
   const opts = {
-   // title: "Stats",
-    width: size['width']-30,
-    height: size['height']-50,
+    title: "Stats",
+    width: size['width'],
+    height: size['height']-60,
     cursor: {
       drag: {
         setScale: false,
@@ -125,8 +125,8 @@ function makeTimelineChart(data, domElement) {
   let size = domElement.getBoundingClientRect();
 
   const opts = {
-    width: size['width'] - 50,
-    height: 200,
+    width: size['width'],
+    height: size['height']-50,
     title: "Modes",
     drawOrder: ["series", "axes"],
     scales: {
@@ -145,7 +145,7 @@ function makeTimelineChart(data, domElement) {
       }
     },
     cursor: cursorOpts,
-    padding: [null, 0, null, 0],
+    //padding: [null, 0, null, 0],
     class: "bg-white",
     legend: {
       show: false,

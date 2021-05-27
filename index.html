@@ -5,17 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Tailwind Starter Template - Day Admin Template: Tailwind Toolbox</title>
-  <meta name="description" content="description here">
-  <meta name="keywords" content="keywords,here">
-
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <title>SBP Web Viewer</title>
   <link href="https://unpkg.com/tailwindcss@next/dist/tailwind.min.css" rel="stylesheet">
-  <!--Replace with your tailwind.css once created-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"
-    integrity="sha256-XF29CBwU1MWLaGEnsELogU6Y6rcc5nCkhhx89nFMIDQ=" crossorigin="anonymous"></script>
-
   <link rel="stylesheet" href="../dist/uPlot.min.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <style>
@@ -43,15 +34,7 @@
       background: rgba(0, 0, 0, 0.3);
     }
 
-    .uplot {
-      margin-bottom: 20px;
-      padding: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    }
 
-    .u-over {
-      box-shadow: 0px 0px 0px 0.5px #ccc;
-    }
   </style>
 
 </head>
@@ -62,7 +45,7 @@
     <div class="w-full mx-auto flex flex-wrap items-center mt-0 pt-3 pb-5 md:pb-0">
 
       <div class="w-1/2 pl-2 md:pl-5">
-        <a class="text-gray-900 text-base xl:text-xl no-underline hover:no-underline font-bold" href="#">
+        <a class="text-gray-900 text-base xl:text-xl no-underline hover:no-underline font-bold" href=".">
           <i class="fas fa-sun text-pink-600 pr-3"></i> SwiftNav SBP Viewer
         </a>
       </div>
@@ -73,7 +56,7 @@
   <!--Container-->
   <div class="xl w-full mx-auto pt-0">
 
-    <div class="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
+    <div class="w-full px-4 md:px-0 md:mt-3 mb-16 text-gray-800 leading-normal">
       <div>
         <%= require('html-loader!./fileUpload.html') %>
       </div>
@@ -96,7 +79,7 @@
           <!--Graph Card-->
           <div class="h-full">
 
-            <div class="p-0 h-full">
+            <div class="p-2 bg-white  h-full border rounded shadow">
               <div id="stats_graph" class="h-full"></div>
             </div>
           </div>
@@ -106,17 +89,17 @@
 
 
 
-        <div class="w-11/12 md:w-11/2 xl:w-11/12 pt-2 pr-1 pl-1">
+        <div class="w-11/12 md:w-11/2 xl:w-11/12 pt-2 pr-1 pl-3"  style="height: 250px">
           <!--Graph Card-->
-          <div class="p-0">
-            <div id="mode_graph"></div>
+          <div class="p-2 h-full border rounded shadow bg-white">
+            <div class="h-full" id="mode_graph"></div>
           </div>
         </div>
         <!--/Graph Card-->
-        <div class="w-1/12 md:w-1/12 xl:w-1/12 pl-0 pr-5 pt-2">
+        <div class="w-1/12 md:w-1/12 xl:w-1/12 pl-3 pr-5 pt-2" style="height: 250px">
           <!--Graph Card-->
-          <div class="bg-white border rounded shadow" style="height: 247px">
-            <div class="p-3">
+          <div class="bg-white border rounded shadow h-full" >
+            <div class="p-3 h-full">
               <ul class="legend">
                 <li><span style="background-color:red"></span>SPS</li>
                 <li><span style="background-color: purple;"></span>SBAS</li>

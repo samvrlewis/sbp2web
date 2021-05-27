@@ -41,10 +41,11 @@ let map = new MapPlot(document.getElementById("map"));
 
 function makeStatsPlot(data, domElement) {
   let size = document.getElementById("stats_graph").getBoundingClientRect();
+  console.log(size);
   const opts = {
-    title: "Stats",
-    width: size['width'] - 50,
-    height: 400,
+   // title: "Stats",
+    width: size['width']-30,
+    height: size['height']-50,
     cursor: {
       drag: {
         setScale: false,
@@ -52,6 +53,7 @@ function makeStatsPlot(data, domElement) {
         y: false,
       }
     },
+    class: "bg-white",
     cursor: cursorOpts,
     scales: {
       x: {
@@ -85,6 +87,8 @@ function makeStatsPlot(data, domElement) {
   };
 
   let u = new uPlot(opts, data, domElement);
+
+
   mooSync.sub(u);
 }
 

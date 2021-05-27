@@ -122,7 +122,7 @@ function makeTimelineChart(data, domElement) {
 
   const opts = {
     width: size['width'] - 50,
-    height: 100,
+    height: 200,
     title: "Modes",
     drawOrder: ["series", "axes"],
     scales: {
@@ -211,6 +211,7 @@ function onSbpFileData(fileData) {
   
     sbpData.then(sbpData => {
       document.getElementById("filepicker").classList.add('hidden');
+      document.getElementById("graph_content").classList.remove("hidden");
       console.log(sbpData);
       var t1 = performance.now();
       console.log("Call to rust took " + (t1 - t0) + " milliseconds.");

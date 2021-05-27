@@ -198,55 +198,44 @@ function set_scale(u) {
   map.setZoom(x_idx[0], x_idx[1]);
 }
 
+
 function onSbpFileData(fileData) {
   var t0 = performance.now();
-  var sbpData = rust.then(m => m.handle_sbp_file_data(new Uint8Array(fileData)));
-  console.log(sbpData);
+  document.getElementById("filePickerSection").classList.add('hidden');
+  document.getElementById("fileLoadingSection").classList.remove('hidden');
 
-  sbpData.then(sbpData => {
-    document.getElementById("filepicker").classList.add('hidden');
+  // Add a 'sleep' here to give the UI a chance to redraw. Otherwise we won't see the spinner.
+  setTimeout(function(){ 
+    var sbpData = rust.then(m => m.handle_sbp_file_data(new Uint8Array(fileData)));
     console.log(sbpData);
-    var t1 = performance.now();
-    console.log("Call to rust took " + (t1 - t0) + " milliseconds.");
-
-    const data = [
-      sbpData['tow'],
-      sbpData['sat_useds'],
-      sbpData['sog']
-    ];
-
-    dataSbp = sbpData;
-    makeStatsPlot(data, document.getElementById("stats_graph"));
-    map.init(sbpData["lats"], sbpData["lons"]);
-    let timeLineData = [
-      sbpData['tow'],
-      sbpData['gnss_mode'].map(function (m) { return GNSS_MODES[m] }),
-      sbpData['ins_mode'].map(function (i) { return INSS_MODES[i] })
-    ]
-    unsetSameFutureValues(timeLineData);
-    makeTimelineChart(timeLineData, document.getElementById("mode_graph"));
-  });
-}
-
-
-// document.getElementById('file_input').addEventListener('change', function () {
-//   var t0 = performance.now()
-//   var reader = new FileReader();
-
-//   reader.onload = function () {
-//     var arrayBuffer = this.result;
-//     console.log(arrayBuffer);
-
-//   }
-
-//   reader.readAsArrayBuffer(this.files[0]);
-// })
-
-
-function initMap() {
+  
+    sbpData.then(sbpData => {
+      document.getElementById("filepicker").classList.add('hidden');
+      console.log(sbpData);
+      var t1 = performance.now();
+      console.log("Call to rust took " + (t1 - t0) + " milliseconds.");
+  
+      const data = [
+        sbpData['tow'],
+        sbpData['sat_useds'],
+        sbpData['sog']
+      ];
+  
+      dataSbp = sbpData;
+      makeStatsPlot(data, document.getElementById("stats_graph"));
+      map.init(sbpData["lats"], sbpData["lons"]);
+      let timeLineData = [
+        sbpData['tow'],
+        sbpData['gnss_mode'].map(function (m) { return GNSS_MODES[m] }),
+        sbpData['ins_mode'].map(function (i) { return INSS_MODES[i] })
+      ]
+      unsetSameFutureValues(timeLineData);
+      makeTimelineChart(timeLineData, document.getElementById("mode_graph"));
+    });
+  
+  }, 10);
 
 }
 
-window.initMap = initMap;
 window.onSbpFileData = onSbpFileData;
 

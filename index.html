@@ -51,6 +51,31 @@
       .u-over {
 			box-shadow: 0px 0px 0px 0.5px #ccc;
 		}
+
+    .loader {
+	border-top-color: #3498db;
+	-webkit-animation: spinner 1.5s linear infinite;
+	animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+	0% {
+		-webkit-transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 		</style>
 
 </head>
@@ -244,7 +269,7 @@
         
   <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
   <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiXhHYeH57PTD6aU8PZaidG7R1g1BFkXo&callback=initMap&libraries=&v=weekly"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiXhHYeH57PTD6aU8PZaidG7R1g1BFkXo&libraries=&v=weekly"
     async></script>
 
   <script>

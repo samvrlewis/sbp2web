@@ -17,6 +17,7 @@ pub struct SbpData {
     pub cogs: Vec<f64>,
     pub gnss_mode: Vec<u8>,
     pub ins_mode: Vec<u8>,
+    pub cor_age: Vec<f64>,
 }
 
 
@@ -72,6 +73,7 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
     let mut cogs = Vec::new();
     let mut gnss_mode = Vec::new();
     let mut ins_mode = Vec::new();
+    let mut corr_ages = Vec::new();
 
     for (ds, _) in &mut runner {
         if let Some(ref ds) = ds {
@@ -129,6 +131,12 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
                     ins_mode.push(ins as u8)
                 }
             }
+            match ds.corr_age_s {
+                None => {},
+                Some(age) => {
+                    corr_ages.push(age)
+                }
+            }
         }
     }
 
@@ -142,6 +150,7 @@ pub fn handle_sbp_file_data(sbp_file_data: &[u8]) -> JsValue {
         cogs: cogs,
         gnss_mode: gnss_mode,
         ins_mode: ins_mode,
+        cor_age: corr_ages,
     };
 
     JsValue::from_serde(&data).unwrap()

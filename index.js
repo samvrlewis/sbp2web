@@ -69,6 +69,14 @@ function makeStatsPlot(data, domElement) {
       {
         label: "sog (m/s)",
         stroke: "blue"
+      },
+      {
+        label: "cog (deg)",
+        stroke: "green"
+      },
+      {
+        label: "corr age (s",
+        stroke: "purple"
       }
     ],
     hooks: {
@@ -228,7 +236,9 @@ function onSbpFileData(fileData) {
       const data = [
         sbpData['tow'],
         sbpData['sat_useds'],
-        sbpData['sog']
+        sbpData['sog'],
+        sbpData['cogs'],
+        sbpData['cor_age']
       ];
   
       dataSbp = sbpData;
